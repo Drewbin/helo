@@ -1,22 +1,23 @@
 import React, { Component } from 'react';
 import './App.css';
+import { HashRouter as Router } from 'react-router-dom';
 
-import Auth from './Components/Auth/Auth';
-import Dashboard from './Components/Dashboard/Dashboard';
-import Form from './Components/Form/Form';
 import Nav from './Components/Nav/Nav';
-import Post from './Components/Post/Post';
+import routes from './routes';
 
 class App extends Component {
+
   render() {
     return (
-      <div className="App">
-        <Auth />
-        <Dashboard />
-        <Form />
-        <Nav />
-        <Post />
-      </div>
+      <Router>
+        <div className="App">
+
+          <Nav />
+
+          {routes}
+
+        </div>
+      </Router>
     );
   }
 }
