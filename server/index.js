@@ -4,10 +4,15 @@ const express = require('express');
 const cors = require('cors')
 const bodyParser = require('body-parser');
 const massive = require('massive');
+const passport = require('passport');
+const Auth0Strategy = ('passport-auth0');
 
 const controller = require('./controller');
 
 const app = express ();
+
+
+//Middleware
 
 let dbPromise;
 
@@ -33,10 +38,16 @@ function getDb() {
     return massive(proces.env.DB_CONNECTION_STRING, { scripts: path.join(__dirname, 'db')});
 }
 
-app.use(useDb);
-
+//Misc
+app.use(useDb());
 app.use(cors());
 app.use(bodyParser.json());
+
+
+//Endpoints
+app.post('/api/register', controller.create_user)
+
+
 
 
 let PORT = 4000;
