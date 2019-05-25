@@ -2,9 +2,9 @@ module.exports = {
 
     create_user : (req, res) => {
         const dbInstance = req.db;
-        const { user_id, username, profile_pic } = req.body
+        const { username, password } = req.body
 
-        dbInstance.create_user([ user_id, username, profile_pic ]).then( () => {
+        dbInstance.create_user([ username, password ]).then( () => {
             res.status(200).send('User registered')
         }).catch( err => {
             res.status(500).send('Failed to register user')

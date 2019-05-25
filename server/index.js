@@ -5,7 +5,7 @@ const cors = require('cors')
 const bodyParser = require('body-parser');
 const massive = require('massive');
 const passport = require('passport');
-const Auth0Strategy = ('passport-auth0');
+const LocalStrategy = ('passport-local');
 
 const controller = require('./controller');
 
@@ -13,7 +13,6 @@ const app = express ();
 
 
 //Middleware
-
 let dbPromise;
 
 function useDb() {
@@ -44,9 +43,66 @@ app.use(cors());
 app.use(bodyParser.json());
 
 
+//Session setup
+app.use(sessions({
+    saveUninitialized: false, 
+    resave: false, 
+    secret: "I'll never tell!"
+}));
+
+//Passport setup
+app.use(passport.initialize());
+app.use(passport.session());
+
+passport.use('login', new LocalStrategy(function (username, password, done) {
+    if(username.length === 0 || password.length === 0) {
+        return done(null, false, { message: 'Username and password required.' });
+    }
+
+    const db = app.get('db');
+
+    db.users.find({ username }).then(userInfo => {
+        const user = userInfo[0];
+        delete user.password;
+        done(null, user);
+    }).catch(err => {
+        console.error(err.message);
+    })
+}));
+
+passport.use('register', new LocalStrategy(function (username, password, done) {
+    if (username.length === 0 || password.length === 0 ) {
+        return done(null, false, {message: 'Username and password required.'});
+    }
+
+    const db = app.get('db');
+    const hashedPassword = bcrypt.hashSync(password, 15);
+
+    db.users.find({username}).then(userInfo => {
+        if( userInfo.length > 0 ) {
+            return done(null, false, {message: 'Username unavailable'});
+        }
+        return db.create_user([username, hashedPassword]);
+    }).then((user) => {
+        const newUser = user[0];
+        delete newUser.password;
+        done(null, newUser);
+    }).catch(err => {
+        console.error(err.message)
+    })
+}));
+
+passport.serializeUser((user, done) => {
+    done(null, user);
+});
+
+passport.deserializeUser((id, done) => {
+    done(null, id);
+});
+
 //Endpoints
 app.post('/api/register', controller.create_user)
-
+app.post('/api/login')
 
 
 

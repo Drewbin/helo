@@ -1,19 +1,37 @@
 import React, { Component } from 'react';
+import axios from 'axios';
+import { connect } from 'react-redux'
+import { updateUser } from '../../ducks/reducer';1
 
-export default class Auth extends Component {
-    constructor() {
-        super()
+class Auth extends Component {
+    constructor(props) {
+        super(props)
 
         this.state = {
             username: '',
             password: '',
         }
-        this.handleChange = this.handleChange.bind(this);
+        this.register = this.register.bind(this);
+        this.login = this.login.bind(this);
     }
 
     handleChange( input, value ) {
         this.setState({
             [input] : value,
+        })
+    }
+
+    login() {
+        axios.post('/api/login', this.state).then(res => {
+            this.props.updateUser(res.data);
+            this.props.history.push('/dashboard');
+        })
+    }
+
+    register() {
+        axios.post('/api/register', this.state).then(res => {
+            this.props.updateUser(res.data);
+            this.props.history.push('/dashboard')
         })
     }
 
@@ -36,13 +54,15 @@ export default class Auth extends Component {
                     onChange={ (e) => this.handleChange('password', e.target.value)} />
                 </div>
                 <div>
-                    <button> Login </button>
+                    <button onClick={this.login}> Login </button>
                 </div>
 
                 <div>
-                    <button> Register </button>
+                    <button onClick={this.register}> Register </button>
                 </div>
             </div>
         )
     }
 }
+
+export default connect(null, { updateUser })(Auth);
