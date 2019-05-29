@@ -5,7 +5,7 @@ const cors = require('cors')
 const bodyParser = require('body-parser');
 const massive = require('massive');
 const passport = require('passport');
-const LocalStrategy = ('passport-local');
+const LocalStrategy = ('passport-local').Strategy;
 
 const controller = require('./controller');
 
@@ -34,7 +34,7 @@ function useDb() {
 }
 
 function getDb() {
-    return massive(proces.env.DB_CONNECTION_STRING, { scripts: path.join(__dirname, 'db')});
+    return massive(process.env.DB_CONNECTION_STRING, { scripts: path.join(__dirname, 'db')});
 }
 
 //Misc
@@ -100,9 +100,14 @@ passport.deserializeUser((id, done) => {
     done(null, id);
 });
 
-//Endpoints
-app.post('/api/register', controller.create_user)
-app.post('/api/login')
+// Auth Endpoints
+app.post('/api/register', controller.register);
+app.post('/api/login', controller.login);
+
+
+//Api Endpoints
+app.get('/api/posts', controller.getOne);
+app.get('/api/posts', controller.getAll);
 
 
 
