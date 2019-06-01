@@ -100,14 +100,33 @@ passport.deserializeUser((id, done) => {
     done(null, id);
 });
 
+
 // Auth Endpoints
-app.post('/api/register', controller.register);
-app.post('/api/login', controller.login);
+app.post('/api/auth/register', passport.authenticate('register'), (req, res) => {
+    req.session.userid();
+    return res.send({ message: 'Registration complete!', user: req.user });
+});
+
+app.post('/api/auth/login', passport.authenticate('login'), (req, res) => {
+    req.session.userid();
+    return res.send({ message: 'Authentication successful!', user: req.user });
+});
+
+app.,post('/api/auth/logout', (req, res) => {
+    req.logout();
+    req.session.destroy();
+    res.sendStatus(200);
+});
 
 
 //Api Endpoints
-app.get('/api/posts', controller.getOne);
+app.get('/api/posts/:id', controller.getOne);
 app.get('/api/posts', controller.getAll);
+app.post('/api/posts', controller.create);
+app.put('/api/posts/:id', controller.edit);
+app.delete('/api/posts/:id', controller.delete);
+app.get('/api/auth/me', controller.login);
+
 
 
 

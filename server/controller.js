@@ -35,9 +35,52 @@ module.exports = {
         })
     },
 
-    create_post : (req, res) => {
+    getOne : (req, res) => {
         const db = req.db;
-        const { title, image, content, }
-    }
+
+        db.get_one().then( post => {
+            res.status(200).send(post)
+        }).catch(err => {
+            res.status(500).send(err);
+            console.error(err);
+        })
+    },
+    
+    create : (req, res) => {
+        const db = req.db;
+        const { title, image, content, author_id } = req.body;
+
+        db.create_post([ title, image, content, author_id ]).then( () => {
+            res.status(200).seend('Post created');
+        }).catch(err => {
+            res.status(500).send('Post creation failed');
+            console.error(err);
+        })
+    },
+
+    edit : (req, res) => {
+        const db = req.db;
+        const { title, image, content, author_id } = req.body;
+        const { id } = req.session;
+
+        db.edit([ title, image, contenct, author_id ]).then( () => {
+            res.status(200).send('Edit successful.')
+        }).catch(err => {
+            res.status(500).send('Edit failed.');
+            console.error(err);
+        })
+    },
+
+    delete : (req, res) => {
+        const db = req.db;
+        const { id } = req.params;
+
+        db.delete([ id ]).then( () => {
+            res.status(200).send('Delete successful')
+        }).catch(err => {
+            res.status(200).send('Delete failed.');
+            console.error(err);
+        })
+    },
 
 }
