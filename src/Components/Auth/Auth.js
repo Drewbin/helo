@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 import { connect } from 'react-redux'
-import { updateUser } from '../../ducks/reducer';1
+
+import { updateUser } from '../../ducks/reducer';
 
 class Auth extends Component {
     constructor(props) {

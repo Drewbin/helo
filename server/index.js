@@ -112,7 +112,7 @@ app.post('/api/auth/login', passport.authenticate('login'), (req, res) => {
     return res.send({ message: 'Authentication successful!', user: req.user });
 });
 
-app.,post('/api/auth/logout', (req, res) => {
+app.post('/api/auth/logout', (req, res) => {
     req.logout();
     req.session.destroy();
     res.sendStatus(200);
