@@ -9,7 +9,7 @@ const LocalStrategy = ('passport-local').Strategy;
 
 const controller = require('./controller');
 
-const app = express ();
+const app = express();
 
 
 //Middleware
@@ -127,7 +127,13 @@ app.put('/api/posts/:id', controller.edit);
 app.delete('/api/posts/:id', controller.delete);
 app.get('/api/auth/me', controller.login);
 
+//serves up our build folder
+app.use(express.static(__dirname + '/../build'))
 
+//sends index.html file from the build folder
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, '../build/index.html'));
+});
 
 
 let PORT = 4000;
