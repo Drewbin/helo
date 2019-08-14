@@ -25,7 +25,7 @@ export default class Dashboard extends Component {
         const { search, myPosts } = this.state;
         const url = `/api/posts/${this.props.id}`;
 
-        if (myPosts %% !search) {
+        if (myPosts && !search) {
             url += '?mine=true';
         
         } else if (!myPosts && search) {
@@ -48,7 +48,15 @@ export default class Dashboard extends Component {
             url += '?mine=true'
         }
         axios.get(url).then(res => {
-            this.setState({ posts: res.data, loading: false, ssearch: '' })
+            this.setState({ posts: res.data, loading: false, search: '' })
+        })
+    }
+
+    search() {
+        axios.get(`/api/posts?title=${this.state.userInput}`).then( response => {
+            this.setState({
+                result: res.data
+            })
         })
     }
 
